@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Chart</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Stock Chart Viewer</h1>
+    
+    <form id = "ticker-form" method="POST">
+        <label for="ticker">Enter Stock Ticker: </label>
+        <input type="text" id="ticker" name="ticker" placeholder="AAPL, TSLA, etc.">
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="loading" style="display: none;">Loading...</div>
+
+    <div id="error-message" style="display: none; color: red;"></div>
+
+    <div id="stock-image" style="display: none;">
+        <h3 id="stock-name"></h3>
+        <img id="chart-img" src="" alt="Stock Chart">
+    </div>
+
+    <button id="back-button" style="display: none;" onclick="window.location.href='/'">Back</button>
+
+    <script>
+        $(document).ready(function() {
+            $('#ticker-form').submit(function(event) {
+                event.preventDefault();
+
+                $('#loading').show();
+                $('#error-message').hide();
+                $('#stock-image').hide();
+                $('#back-button').hide();
+
+                var ticker = $('#ticker').val().toUpperCase();
+
+                $.ajax({
+                    url: '/get_stock_data',
+                    method: 'POST',
+                    data: { ticker: ticker },
+                    success: function(response) {
+                        $('#loading').hide();
+
+                        if (response.image_url) {
+                            var imageUrl = response.image_url;
+                            var stockName = ticker.toUpperCase();
+
+                            $('#chart-img').attr('src', imageUrl);
+                            $('#stock-name').text("Stock Chart for " + stockName);
+                            $('#stock-image').show();
+                            $('#back-button').show();
+                            
+                        } else if (response.error) {
+                            $('#error-message').text(response.error).show();
+                        }
+                    },
+                    error: function(error) {
+                        $('#loading').hide();
+                        $('#error-message').text('An error occurred. Please try again.').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
