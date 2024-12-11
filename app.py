@@ -63,14 +63,11 @@ def get_stock_data():
             image_url = f'/get_image/{ticker}'
 
             return {"image_url": image_url}, 200
-            #return render_template('index.html', image_url=image_url)
         
         except Exception as e:
             return {"error": f"An error occurred: {str(e)}"}, 500
-            #return render_template('error.html', error_message=f"An error occurred: {str(e)}"), 500
     else:
         return {"error" : "Invalid ticker"}, 400
-        #return render_template('error.html', error_message="Invalid ticker"), 400
 
 @app.route('/get_image/<ticker>')
 def get_image(ticker):
