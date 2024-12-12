@@ -1,0 +1,32 @@
+name: Docker Image Build
+
+on:
+  push:
+    branches:
+      - main   # Trigger action on pushes to the `main` branch
+  pull_request:
+    branches:
+      - main   # Trigger action on pull requests to the `main` branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up Docker Buildx (for building Docker images)
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Build the Docker image
+    - name: Build Docker image
+      run: |
+        docker build -t stock_app-server:latest .
+
+    # Test
+    - name: Test Docker image
+      run: |
+        docker run --rm stock_app-server:latest python --version
