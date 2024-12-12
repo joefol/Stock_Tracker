@@ -81,4 +81,4 @@ def get_image(ticker):
         return render_template("error.html", error_message=f"An error occurred: {str(e)}"), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
